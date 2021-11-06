@@ -1,0 +1,120 @@
+CREATE DATABASE `pokedex_schema` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+CREATE TABLE `ability` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `type` (
+  `id` int NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `bug` float DEFAULT NULL,
+  `dark` float DEFAULT NULL,
+  `dragon` float DEFAULT NULL,
+  `eletric` float DEFAULT NULL,
+  `fairy` float DEFAULT NULL,
+  `fighting` float DEFAULT NULL,
+  `fire` float DEFAULT NULL,
+  `flying` float DEFAULT NULL,
+  `ghost` float DEFAULT NULL,
+  `grass` float DEFAULT NULL,
+  `ground` float DEFAULT NULL,
+  `ice` float DEFAULT NULL,
+  `normal` float DEFAULT NULL,
+  `poison` float DEFAULT NULL,
+  `psychic` float DEFAULT NULL,
+  `rock` float DEFAULT NULL,
+  `steel` float DEFAULT NULL,
+  `water` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon` (
+  `id` int NOT NULL,
+  `pokemon_num` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `hp` int NOT NULL,
+  `attack` int NOT NULL,
+  `sp_attack` int NOT NULL,
+  `defense` int NOT NULL,
+  `sp_defense` int NOT NULL,
+  `speed` int NOT NULL,
+  `is_mega` tinyint NOT NULL,
+  `sex` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `move` (
+  `id` int NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  `type` int DEFAULT NULL,
+  `category` int DEFAULT NULL,
+  `power` int DEFAULT NULL,
+  `accuracy` int DEFAULT NULL,
+  `priority` int DEFAULT NULL,
+  `pp` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_type_idx` (`type`),
+  CONSTRAINT `fk_type` FOREIGN KEY (`type`) REFERENCES `type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `nature` (
+  `id` int NOT NULL,
+  `increase` varchar(45) DEFAULT NULL,
+  `decrease` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon_ability` (
+  `id_pokemon` int NOT NULL,
+  `id_ability` int NOT NULL,
+  PRIMARY KEY (`id_pokemon`,`id_ability`),
+  UNIQUE KEY `id_pokemon_UNIQUE` (`id_pokemon`),
+  UNIQUE KEY `id_ability_UNIQUE` (`id_ability`),
+  CONSTRAINT `fk_pokemonability_id_ability` FOREIGN KEY (`id_ability`) REFERENCES `ability` (`id`),
+  CONSTRAINT `fk_pokemonability_id_pokemon` FOREIGN KEY (`id_pokemon`) REFERENCES `pokemon` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon_evolution` (
+  `id_pokemon` int NOT NULL,
+  `id_pokemon_evo` int NOT NULL,
+  PRIMARY KEY (`id_pokemon`,`id_pokemon_evo`),
+  KEY `fk_pokemonevo_id_evo_idx` (`id_pokemon_evo`),
+  CONSTRAINT `fk_pokemonevo_id_evo` FOREIGN KEY (`id_pokemon_evo`) REFERENCES `pokemon` (`id`),
+  CONSTRAINT `fk_pokemonevo_id_pokemon` FOREIGN KEY (`id_pokemon`) REFERENCES `pokemon` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon_move` (
+  `id_pokemon` int NOT NULL,
+  `id_move` int NOT NULL,
+  PRIMARY KEY (`id_pokemon`,`id_move`),
+  UNIQUE KEY `id_pokemon_UNIQUE` (`id_pokemon`),
+  UNIQUE KEY `id_move_UNIQUE` (`id_move`),
+  CONSTRAINT `fk_pokemonmove_id_move` FOREIGN KEY (`id_move`) REFERENCES `move` (`id`),
+  CONSTRAINT `fk_pokemonmove_id_pokemon` FOREIGN KEY (`id_pokemon`) REFERENCES `pokemon` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon_sprite` (
+  `id` int NOT NULL,
+  `pokemon_id` int NOT NULL,
+  `sprite_location` longtext NOT NULL,
+  `sprite_gen` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_pokemonsprite_id_pokemon_idx` (`pokemon_id`),
+  CONSTRAINT `fk_pokemonsprite_id_pokemon` FOREIGN KEY (`pokemon_id`) REFERENCES `pokemon` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `pokemon_type` (
+  `id_pokemon` int NOT NULL,
+  `id_type` int NOT NULL,
+  PRIMARY KEY (`id_pokemon`,`id_type`),
+  UNIQUE KEY `id_pokemon_UNIQUE` (`id_pokemon`),
+  UNIQUE KEY `id_type_UNIQUE` (`id_type`),
+  KEY `fk_id_type_idx` (`id_type`),
+  CONSTRAINT `fk_pokemontype_id_pokemon` FOREIGN KEY (`id_pokemon`) REFERENCES `pokemon` (`id`),
+  CONSTRAINT `fk_pokemontype_id_type` FOREIGN KEY (`id_type`) REFERENCES `type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
